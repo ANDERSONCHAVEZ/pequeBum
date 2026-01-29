@@ -1,0 +1,35 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Ejecutor PequeBum cada 8 horas
+
+on:
+  schedule:
+    # Este es el "cron". '0 */8 * * *' significa:
+    # Minuto 0, cada 8 horas, todos los días.
+    - cron: '0 */8 * * *'
+  workflow_dispatch: # Esto te permite ejecutarlo manualmente con un botón para probar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # GitHub te presta una PC con Linux gratis
+
+    steps:
+      - name: Descargar mi código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar librerías necesarias
+        run: |
+          pip install -r requirements.txt
+          sudo apt install imagemagick # Necesario para que MoviePy ponga texto en los videos
+
+      - name: Ejecutar el script de video
+        env:
+          # Aquí conectamos los Secrets de GitHub con tu script de Python
+          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YOUTUBE_CREDENTIALS: ${{ secrets.YOUTUBE_JSON }}
+        run: python pequebum_auto.py
