@@ -22,6 +22,11 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Configurar ImageMagick
+        run: |
+          sudo apt install imagemagick
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
+          
       - name: Instalar librerías necesarias
         run: |
           pip install -r requirements.txt
@@ -30,6 +35,6 @@ jobs:
       - name: Ejecutar el script de video
         env:
           # Aquí conectamos los Secrets de GitHub con tu script de Python
-          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
           YOUTUBE_CREDENTIALS: ${{ secrets.YOUTUBE_JSON }}
         run: python pequebum_auto.py
